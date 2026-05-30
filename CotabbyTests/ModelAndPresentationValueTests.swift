@@ -39,6 +39,9 @@ final class SuggestionTextColorCodecTests: XCTestCase {
 
 final class SuggestionModelValueTests: XCTestCase {
     func test_wordCountPresetsExposeMatchingPromptInstructionsAndTokenBudgets() {
+        XCTAssertEqual(SuggestionWordCountPreset.oneToTwo.promptInstruction, "Return only the next 1 to 2 words.")
+        XCTAssertEqual(SuggestionWordCountPreset.oneToTwo.suggestedPredictionTokenBudget, 3)
+
         XCTAssertEqual(SuggestionWordCountPreset.threeToSeven.promptInstruction, "Return only the next 3 to 7 words.")
         XCTAssertEqual(SuggestionWordCountPreset.threeToSeven.suggestedPredictionTokenBudget, 11)
 

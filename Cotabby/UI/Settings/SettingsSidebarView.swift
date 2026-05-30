@@ -33,16 +33,32 @@ struct SettingsSidebarView: View {
 
     @ViewBuilder
     private func row(for category: SettingsCategory) -> some View {
-        HStack(spacing: 6) {
-            Label(category.label, systemImage: category.systemImage)
+        HStack(spacing: 10) {
+            Image(systemName: category.systemImage)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 16, alignment: .center)
+
+            Text(category.label)
+                .lineLimit(1)
+
             Spacer(minLength: 0)
+
             if attentionCategories.contains(category) {
                 Circle()
                     .fill(Color.orange)
-                    .frame(width: 7, height: 7)
-                    .accessibilityLabel("Needs attention")
+                    .frame(width: 8, height: 8)
+                    .overlay {
+                        Circle()
+                            .strokeBorder(Color.orange.opacity(0.28), lineWidth: 4)
+                    }
+                    .accessibilityLabel("\(category.label) needs attention")
             }
         }
+        .font(.system(size: 13, weight: .medium))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .listRowInsets(EdgeInsets(top: 8, leading: 14, bottom: 8, trailing: 14))
         .tag(category)
     }
 }

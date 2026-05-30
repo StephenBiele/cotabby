@@ -190,11 +190,13 @@ enum SuggestionRequestFactory {
     }
 
     private static func activeMaxPredictionTokens(
-        configuration: SuggestionConfiguration,
+        configuration _: SuggestionConfiguration,
         wordCountPreset: SuggestionWordCountPreset,
         isMultiLineEnabled: Bool
     ) -> Int {
-        let base = max(configuration.maxPredictionTokens, wordCountPreset.suggestedPredictionTokenBudget)
+        // Completion length is preset-driven. Using the preset budget directly lets short options
+        // like 1-2 words actually decode fewer tokens instead of being floored by the app default.
+        let base = max(1, wordCountPreset.suggestedPredictionTokenBudget)
         return isMultiLineEnabled ? min(base * 2, 60) : base
     }
 

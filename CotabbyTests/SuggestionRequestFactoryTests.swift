@@ -171,6 +171,40 @@ final class SuggestionRequestFactoryTests: XCTestCase {
         XCTAssertEqual(result.promptPreview, result.request.prompt)
     }
 
+    func test_buildRequest_usesShortestPresetTokenBudgetWithoutConfigurationFloor() {
+        let context = CotabbyTestFixtures.focusedInputContext(precedingText: "Hello world")
+        let configuration = SuggestionConfiguration(
+            maxPredictionTokens: 8,
+            debounceMilliseconds: 0,
+            temperature: 0.1,
+            topK: 20,
+            topP: 0.7,
+            minP: 0.08,
+            repetitionPenalty: 1.05,
+            randomSeed: 42,
+            maxPrefixWords: 50,
+            maxPrefixCharacters: 1000,
+            maxPrefixWordsFoundationModel: 150,
+            maxPrefixCharactersFoundationModel: 2500,
+            maxSuffixCharacters: 192,
+            defaultUserName: nil,
+            defaultWordCountPreset: .oneToTwo,
+            focusPollIntervalMilliseconds: 50
+        )
+
+        let result = SuggestionRequestFactory.buildRequest(
+            context: context,
+            settings: CotabbyTestFixtures.settingsSnapshot(selectedWordCountPreset: .oneToTwo),
+            configuration: configuration
+        )
+
+        XCTAssertEqual(
+            result.request.completionLengthInstruction,
+            "Return only the next 1 to 2 words."
+        )
+        XCTAssertEqual(result.request.maxPredictionTokens, 3)
+    }
+
     func test_buildRequest_carriesProfileAndVisualContextSummary() {
         let context = CotabbyTestFixtures.focusedInputContext(precedingText: "Hello")
 
